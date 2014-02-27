@@ -1,19 +1,35 @@
 package com.example.smartplaylist1;
 
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import com.facebook.*;
-import com.facebook.model.*;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
+	private MainFragment mainFragment;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+
+	    if (savedInstanceState == null) {
+	        // Add the fragment on initial activity setup
+	        mainFragment = new MainFragment();
+	        getSupportFragmentManager()
+	        .beginTransaction()
+	        .add(android.R.id.content, mainFragment)
+	        .commit();
+	    } else {
+	        // Or set the fragment from restored state info
+	        mainFragment = (MainFragment) getSupportFragmentManager()
+	        .findFragmentById(android.R.id.content);
+	    }
 	}
 
+		
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
