@@ -40,7 +40,8 @@ public class MainFragment extends Fragment{
 	
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
-	    	
+//	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
+//	    	startActivity(intent);
 		    Log.i(TAG, ""+state.name().toString());
 	    } else if (state.isClosed()) {
 	        
@@ -78,7 +79,8 @@ public class MainFragment extends Fragment{
 					        
 						}
 					}).executeAsync();
-	    
+	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
+	    	startActivity(intent);
 	    }
 	    uiHelper.onResume();
 	}
