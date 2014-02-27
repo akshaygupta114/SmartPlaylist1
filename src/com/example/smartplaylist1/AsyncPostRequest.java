@@ -17,9 +17,11 @@ import android.os.AsyncTask;
 
 
 class AsyncPostRequest extends AsyncTask<BasicNameValuePair, Integer, Double> {
+	private String URL;
+	
 	public void postData(BasicNameValuePair... args) {
 		HttpClient httpclient = new DefaultHttpClient();
-		 HttpPost httppost = new HttpPost("http://54.84.22.77/epi/1/login");
+		 HttpPost httppost = new HttpPost(this.URL);
 
 		    try {
 		        // Add your data
@@ -39,6 +41,10 @@ class AsyncPostRequest extends AsyncTask<BasicNameValuePair, Integer, Double> {
 		    }
 	}
 
+	public void setURL(String URL) {
+		this.URL = URL;
+	}
+	
 	@Override
 	protected Double doInBackground(BasicNameValuePair... arg0) {
 		// TODO Auto-generated method stub
