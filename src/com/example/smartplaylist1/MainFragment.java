@@ -2,33 +2,19 @@ package com.example.smartplaylist1;
 
 
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.facebook.Request;
-import com.facebook.Request.GraphUserCallback;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -56,7 +42,8 @@ public class MainFragment extends Fragment{
 	
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
-	    	
+//	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
+//	    	startActivity(intent);
 		    Log.i(TAG, ""+state.name().toString());
 	    } else if (state.isClosed()) {
 	        
@@ -94,7 +81,8 @@ public class MainFragment extends Fragment{
 					        
 						}
 					}).executeAsync();
-	    
+	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
+	    	startActivity(intent);
 	    }
 	    uiHelper.onResume();
 	}
