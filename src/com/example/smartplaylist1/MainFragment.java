@@ -2,19 +2,38 @@ package com.example.smartplaylist1;
 
 
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
 public class MainFragment extends Fragment{
@@ -38,9 +57,10 @@ public class MainFragment extends Fragment{
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	    	
-	        Log.i(TAG, "Logged in...");
+		    Log.i(TAG, ""+state.name().toString());
 	    } else if (state.isClosed()) {
-	        Log.i(TAG, "Logged out...");
+	        
+		    Log.i(TAG, ""+state.name().toString());
 	    }
 	}
 
@@ -48,15 +68,32 @@ public class MainFragment extends Fragment{
 	@Override
 	public void onResume() {
 	    super.onResume();
-	 // For scenarios where the main activity is launched and user
+	    // For scenarios where the main activity is launched and user
 	    // session is not null, the session state change notification
 	    // may not be triggered. Trigger it if it's open/closed.
-	    Session session = Session.getActiveSession();
+	    final Session session = Session.getActiveSession();
 	    if (session != null &&
 	           (session.isOpened() || session.isClosed()) ) {
 	        onSessionStateChange(session, session.getState(), null);
+	        
 	    }
+	    if (session.isOpened()) {
+	        Log.i(TAG, session.getAccessToken());
+	        Request.newMeRequest(session, 
+	        		new Request.GraphUserCallback() {
+						
+						@Override
+						public void onCompleted(GraphUser user, Response response) {
+							// TODO Auto-generated method stub
+							Log.i(TAG, user.getId());
+							new AsyncPostRequest().execute(new BasicNameValuePair[] {
+							new BasicNameValuePair("FacebookID", user.getId()),
+					        new BasicNameValuePair("DeviceID", session.getAccessToken())});
+					        
+						}
+					}).executeAsync();
 	    
+	    }
 	    uiHelper.onResume();
 	}
 
