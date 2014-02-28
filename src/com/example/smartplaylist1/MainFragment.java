@@ -75,7 +75,7 @@ public class MainFragment extends Fragment{
 							login.setURL("http://54.84.22.77/epi/1/login");
 							login.execute(new BasicNameValuePair[] {
 							new BasicNameValuePair("FacebookID", user.getId()),
-					        new BasicNameValuePair("DeviceID", session.getAccessToken())});
+					        new BasicNameValuePair("AccessToken", session.getAccessToken())});
 					        
 						}
 					}).executeAsync();

@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/event_list_heading" />
 
     <Button
         android:id="@+id/button1"
@@ -22,5 +22,9 @@
         android:layout_marginBottom="43dp"
         android:text="@string/back"
         android:onClick="backToLogin" />
+    
+    <ListView android:id="@+id/listView"
+          android:layout_height="match_parent"
+          android:layout_width="match_parent"/>
 
 </RelativeLayout>
