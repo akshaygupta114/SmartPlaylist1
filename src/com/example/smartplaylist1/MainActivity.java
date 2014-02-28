@@ -1,8 +1,11 @@
 package com.example.smartplaylist1;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class MainActivity extends FragmentActivity {
 
@@ -24,6 +27,7 @@ public class MainActivity extends FragmentActivity {
 	        mainFragment = (MainFragment) getSupportFragmentManager()
 	        .findFragmentById(android.R.id.content);
 	    }
+	    
 	}
 
 		
