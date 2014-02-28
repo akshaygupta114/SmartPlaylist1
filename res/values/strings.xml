@@ -7,5 +7,6 @@
     <string name="app_id">646533915411234</string>
     <string name="title_activity_view_created_events">ViewCreatedEventsActivity</string>
     <string name="back">Back to Login Screen</string>
+    <string name="logout">Logout</string>
 
 </resources>
