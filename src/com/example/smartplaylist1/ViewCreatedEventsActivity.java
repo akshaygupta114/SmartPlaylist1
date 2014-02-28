@@ -15,6 +15,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -38,9 +41,8 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	
 	String eventsJSON = "{{\"OwnerID\":\"674481742\",\"EventName\":\"Fund Raiser 5k\",\"Loc\":{\"Latitude\":\"33.7896627\",\"Longitude\":\"-84.3946271\"},\"EventDesc\":\"A fund raiser 5k, Share your playlists if you will attend\",\"EventVenue\":\"Griffin Track\"},{\"OwnerID\":\"674481742\",\"EventName\":\"Mobile Apps Lab Party\",\"Loc\":{\"Latitude\":\"33.7773242\",\"Longitude\":\"-84.3899984\"},\"EventDesc\":\"Party at Mobile Apps Lab\",\"EventVenue\":\"Mobile Apps Lab\"}}";
 	JSONArray events; 
-	List<Map<String, String>> planetsList = new ArrayList<Map<String,String>>();
+	List<Map<String, String>> EventsList = new ArrayList<Map<String,String>>();
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,10 +62,6 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 					}
 				}).executeAsync();
 		
-		/*AsyncGetRequest login = new AsyncGetRequest();
-		login.setURL(URL);
-		login.execute();
-		*/
 		
 		initList();
 	     
@@ -77,8 +75,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	    // The row layout that is used during the row creation
 	    // The keys used to retrieve the data
 	    // The View id used to show the data. The key number and the view id must match
-	    simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
-	    
+	    simpleAdpt = new SimpleAdapter(this, EventsList, android.R.layout.simple_list_item_1, new String[] {"event"}, new int[] {android.R.id.text1});    
 	 
 	    lv.setAdapter(simpleAdpt);
 
@@ -98,21 +95,15 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	}
 	
 	private void initList() {
-	    // We populate the planets
-	    planetsList.add(createPlanet("planet", "Mercury"));
-	    planetsList.add(createPlanet("planet", "Venus"));
-	    planetsList.add(createPlanet("planet", "Mars"));
-	    planetsList.add(createPlanet("planet", "Jupiter"));
-	    planetsList.add(createPlanet("planet", "Saturn"));
-	    planetsList.add(createPlanet("planet", "Uranus"));
-	    planetsList.add(createPlanet("planet", "Neptune"));   
+	    // We populate the events
+	    EventsList.add(createEvent("event", "Connecting to Server..."));  
 	}
 	 
-	private HashMap<String, String> createPlanet(String key, String name) {
-	    HashMap<String, String> planet = new HashMap<String, String>();
-	    planet.put(key, name);
+	private HashMap<String, String> createEvent(String key, String name) {
+	    HashMap<String, String> event = new HashMap<String, String>();
+	    event.put(key, name);
 	     
-	    return planet;
+	    return event;
 	}
 	
 	private class AsyncFetchEvents extends AsyncTask<String, Integer, String> {
@@ -131,9 +122,26 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		}
 		
 		protected void onPostExecute(String str) {
-			planetsList.clear();
-			planetsList.add(createPlanet("planet", "JSON : " + str));
-			Log.i(TAG, "Returned shit:" + str);
+			EventsList.clear();
+			//eventsList.add(createEvent("event", "JSON : " + str));
+			
+			try {
+		        JSONTokener tokener = new JSONTokener(str);
+		        JSONArray jArray = new JSONArray(tokener);
+		        for (int i=0; i < jArray.length(); i++)
+		        {
+	                JSONObject oneObject = jArray.getJSONObject(i);
+	                // Pulling items from the array
+	                String eventName = oneObject.getString("EventName");
+	                Log.i(TAG, "EventName "+eventName);
+	                String eventVenue = oneObject.getString("EventVenue");
+	                Log.i(TAG, "EventVenue "+eventVenue);
+	                EventsList.add(createEvent("event", eventName + "\n at " + eventVenue));
+		        }
+		    }catch(JSONException jse){
+		    	//oops
+		    }
+			Log.i(TAG, EventsList.toString()+""+EventsList.size());
 			simpleAdpt.notifyDataSetChanged();
 		}
 
