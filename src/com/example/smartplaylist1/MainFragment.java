@@ -22,8 +22,10 @@ import com.facebook.widget.LoginButton;
 
 public class MainFragment extends Fragment{
 
+	//public final static String FACEBOOKID = "com.example.myfirstapp.MESSAGE";
 	private static final String TAG = "MainFragment";
 	private UiLifecycleHelper uiHelper;	
+	String facebookID = "";
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 	    @Override
 	    public void call(Session session, SessionState state, Exception exception) {
@@ -43,6 +45,8 @@ public class MainFragment extends Fragment{
 //	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
 //	    	startActivity(intent);
 		    Log.i(TAG, ""+state.name().toString());
+	        Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
+	    	startActivity(intent);
 	    } else if (state.isClosed()) {
 	        
 		    Log.i(TAG, ""+state.name().toString());
@@ -64,6 +68,7 @@ public class MainFragment extends Fragment{
 	    }
 	    if (session.isOpened()) {
 	        Log.i(TAG, session.getAccessToken());
+
 	        Request.newMeRequest(session, 
 	        		new Request.GraphUserCallback() {
 						
@@ -71,16 +76,17 @@ public class MainFragment extends Fragment{
 						public void onCompleted(GraphUser user, Response response) {
 							// TODO Auto-generated method stub
 							Log.i(TAG, user.getId());
+							facebookID = user.getId();
+							
 							AsyncPostRequest login = new AsyncPostRequest();
 							login.setURL("http://54.84.22.77/epi/1/login");
 							login.execute(new BasicNameValuePair[] {
 							new BasicNameValuePair("FacebookID", user.getId()),
 					        new BasicNameValuePair("AccessToken", session.getAccessToken())});
-					        
+
 						}
 					}).executeAsync();
-	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
-	    	startActivity(intent);
+
 	    }
 	    uiHelper.onResume();
 	}

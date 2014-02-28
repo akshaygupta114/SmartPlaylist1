@@ -244,6 +244,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f040018;
         public static final int large=0x7f040002;
         public static final int listView=0x7f040004;
+        public static final int logout=0x7f04001c;
         public static final int normal=0x7f040001;
         public static final int picker_subtitle=0x7f040014;
         public static final int small=0x7f040000;
