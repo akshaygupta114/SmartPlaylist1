@@ -302,14 +302,8 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_log_in_button=0x7f070008;
         public static final int com_facebook_usersettingsfragment_logged_in=0x7f070009;
         public static final int com_facebook_usersettingsfragment_not_logged_in=0x7f07000a;
-<<<<<<< HEAD
         public static final int logout=0x7f07001e;
         public static final int title_activity_view_created_events=0x7f07001c;
-=======
-        public static final int event_list_heading=0x7f07001b;
-        public static final int logout=0x7f07001f;
-        public static final int title_activity_view_created_events=0x7f07001d;
->>>>>>> background
     }
     public static final class style {
         /** 
