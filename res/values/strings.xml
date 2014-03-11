@@ -7,5 +7,7 @@
     <string name="title_activity_view_created_events">Your Events</string>
     <string name="back">Create New Event</string>
     <string name="logout">Logout</string>
+    <string name="desc_location_image">UI Location Image</string>
+    <string name="action_new">New Event</string>
 
 </resources>

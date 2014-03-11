@@ -66,9 +66,7 @@ public class MainFragment extends Fragment{
 	        onSessionStateChange(session, session.getState(), null);
 	        
 	    }
-	    if (session.isOpened()) {
-	        Log.i(TAG, session.getAccessToken());
-
+	    if(session.isOpened()) {
 	        Request.newMeRequest(session, 
 	        		new Request.GraphUserCallback() {
 						
@@ -85,8 +83,7 @@ public class MainFragment extends Fragment{
 					        new BasicNameValuePair("AccessToken", session.getAccessToken())});
 
 						}
-					}).executeAsync();
-
+					}).executeAsync();	
 	    }
 	    uiHelper.onResume();
 	}

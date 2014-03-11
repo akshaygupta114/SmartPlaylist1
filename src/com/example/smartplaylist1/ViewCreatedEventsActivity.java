@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -62,8 +63,6 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 					}
 				}).executeAsync();
 		
-		
-		initList();
 	     
 	    // We get the ListView component from the layout
 	    ListView lv = (ListView) findViewById(R.id.listView);
@@ -75,7 +74,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	    // The row layout that is used during the row creation
 	    // The keys used to retrieve the data
 	    // The View id used to show the data. The key number and the view id must match
-	    simpleAdpt = new SimpleAdapter(this, EventsList, android.R.layout.simple_list_item_1, new String[] {"event"}, new int[] {android.R.id.text1});    
+	    simpleAdpt = new SimpleAdapter(this, EventsList, R.layout.list_location_view, new String[] {"title", "location"}, new int[] {R.id.title, R.id.location});    
 	 
 	    lv.setAdapter(simpleAdpt);
 
@@ -85,7 +84,27 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.view_created_events, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_new:
+	            // Open new activity for this
+	            return true;
+	        case R.id.action_settings:
+	        	// We do nothing here since we have no settings
+	            // openSettings();
+	            return true;
+	        case R.id.logout:
+	        	Session session = Session.getActiveSession();
+	        	session.closeAndClearTokenInformation();
+	        	Intent intent = new Intent(this, MainActivity.class);
+		    	startActivity(intent);
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	//Called when Back to Login button is clicked
@@ -131,12 +150,14 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		        for (int i=0; i < jArray.length(); i++)
 		        {
 	                JSONObject oneObject = jArray.getJSONObject(i);
+	                HashMap<String, String> mp = createEvent("title", oneObject.getString("EventName"));
+	                mp.put("location", oneObject.getString("EventVenue"));
 	                // Pulling items from the array
 	                String eventName = oneObject.getString("EventName");
 	                Log.i(TAG, "EventName "+eventName);
 	                String eventVenue = oneObject.getString("EventVenue");
 	                Log.i(TAG, "EventVenue "+eventVenue);
-	                EventsList.add(createEvent("event", eventName + "\n at " + eventVenue));
+	                EventsList.add(mp);
 		        }
 		    }catch(JSONException jse){
 		    	//oops
