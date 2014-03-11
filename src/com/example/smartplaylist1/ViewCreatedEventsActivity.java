@@ -35,10 +35,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import eu.erikw.PullToRefreshListView;
+
 public class ViewCreatedEventsActivity extends FragmentActivity {
 	
 	private static final String TAG = "ViewCreatedEventsActivity";
 	SimpleAdapter simpleAdpt;
+	PullToRefreshListView lv;
 	
 	String eventsJSON = "{{\"OwnerID\":\"674481742\",\"EventName\":\"Fund Raiser 5k\",\"Loc\":{\"Latitude\":\"33.7896627\",\"Longitude\":\"-84.3946271\"},\"EventDesc\":\"A fund raiser 5k, Share your playlists if you will attend\",\"EventVenue\":\"Griffin Track\"},{\"OwnerID\":\"674481742\",\"EventName\":\"Mobile Apps Lab Party\",\"Loc\":{\"Latitude\":\"33.7773242\",\"Longitude\":\"-84.3899984\"},\"EventDesc\":\"Party at Mobile Apps Lab\",\"EventVenue\":\"Mobile Apps Lab\"}}";
 	JSONArray events; 
@@ -65,9 +68,29 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		
 	     
 	    // We get the ListView component from the layout
-	    ListView lv = (ListView) findViewById(R.id.listView);
-	     
-	     
+		lv = (PullToRefreshListView) findViewById(R.id.listView);
+		lv.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+            	Session session = Session.getActiveSession();
+            	Request.newMeRequest(session, 
+                		new Request.GraphUserCallback() {
+        					
+        					@Override
+        					public void onCompleted(GraphUser user, Response response) {
+        						// TODO Auto-generated method stub
+        						Log.i(TAG, user.getId());
+        						String facebookID = user.getId();
+
+        						new AsyncFetchEvents().execute(facebookID);
+        					}
+        				}).executeAsync();
+				
+			}
+		});
+
+
 	    // This is a simple adapter that accepts as parameter
 	    // Context
 	    // Data list
@@ -164,6 +187,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		    }
 			Log.i(TAG, EventsList.toString()+""+EventsList.size());
 			simpleAdpt.notifyDataSetChanged();
+			lv.onRefreshComplete();
 		}
 
 	}
