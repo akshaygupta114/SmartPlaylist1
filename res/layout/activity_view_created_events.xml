@@ -16,8 +16,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="43dp"
-        android:text="@string/back"
-        android:onClick="backToLogin" />
+        android:text="@string/btn_create_new_event"
+        android:onClick="createNewEvent" />
     
     <ListView android:id="@+id/listView"
           android:layout_height="match_parent"

@@ -5,7 +5,15 @@
     <string name="action_settings">Settings</string>
     <string name="app_id">646533915411234</string>
     <string name="title_activity_view_created_events">Your Events</string>
-    <string name="back">Create New Event</string>
+    <string name="btn_create_new_event">Create New Event</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_creat_event">CreatEventActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="txt_event_name">Name</string>
+    <string name="btn_create">Create</string>
+    <string name="txt_event_description">Description</string>
+    <string name="txt_event_venue">Venue</string>
+    <string name="txt_event_latitude">Latitude</string>
+    <string name="txt_event_longitude">Longitude</string>
 
 </resources>
