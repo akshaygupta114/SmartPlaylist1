@@ -3,6 +3,9 @@ package com.example.smartplaylist1;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +26,8 @@ public class CreateEventsFragment extends Fragment {
 	
 	 // Google Map
     private GoogleMap googleMap;
+    double lat;
+    double log;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,9 +64,10 @@ public class CreateEventsFragment extends Fragment {
 
             // Enable / Disable zooming functionality
             googleMap.getUiSettings().setZoomGesturesEnabled(true);
-
-            double latitude = 17.385044;
-            double longitude = 78.486671;
+            
+            _getLocation();
+            double latitude = lat; //17.385044;
+            double longitude = log; //78.486671;
 
             // lets place some 10 random markers
             for (int i = 0; i < 10; i++) {
@@ -126,6 +132,22 @@ public class CreateEventsFragment extends Fragment {
             e.printStackTrace();
         }
         return rootView;
+    }
+    
+    private void _getLocation() {
+        // Get the location manager
+        LocationManager locationManager = (LocationManager) 
+                getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(bestProvider);
+        try {
+            lat = location.getLatitude();
+            log = location.getLongitude();
+        } catch (NullPointerException e) {
+            lat = -1.0;
+            log = -1.0;
+        }
     }
     
     /**

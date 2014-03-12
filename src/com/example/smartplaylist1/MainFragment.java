@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
-public class MainFragment extends Fragment{
+public class MainFragment extends android.support.v4.app.DialogFragment{
 
 	//public final static String FACEBOOKID = "com.example.myfirstapp.MESSAGE";
 	private static final String TAG = "MainFragment";
