@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class MainFragment extends Fragment{
 
 	//public final static String FACEBOOKID = "com.example.myfirstapp.MESSAGE";
 	private static final String TAG = "MainFragment";
+	private Session mSession;
 	private UiLifecycleHelper uiHelper;	
 	String facebookID = "";
 	private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -40,16 +42,15 @@ public class MainFragment extends Fragment{
 	    uiHelper.onCreate(savedInstanceState);
 	}
 	
-	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-	    if (state.isOpened()) {
-//	    	Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
-//	    	startActivity(intent);
-		    Log.i(TAG, ""+state.name().toString());
-	        Intent intent = new Intent(getActivity(), ViewCreatedEventsActivity.class);
-	    	startActivity(intent);
+	private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
+		if (state.isOpened()) {
+			if(mSession == null || isSessionChanged(session)) {
+				mSession = session;
+				((MainActivity) getActivity()).Login();
+			}
 	    } else if (state.isClosed()) {
-	        
-		    Log.i(TAG, ""+state.name().toString());
+	    	//MainActivity.Logout(getActivity().getApplicationContext());
+	        Log.i(TAG, ""+state.name().toString());
 	    }
 	}
 
@@ -65,25 +66,6 @@ public class MainFragment extends Fragment{
 	           (session.isOpened() || session.isClosed()) ) {
 	        onSessionStateChange(session, session.getState(), null);
 	        
-	    }
-	    if(session.isOpened()) {
-	        Request.newMeRequest(session, 
-	        		new Request.GraphUserCallback() {
-						
-						@Override
-						public void onCompleted(GraphUser user, Response response) {
-							// TODO Auto-generated method stub
-							Log.i(TAG, user.getId());
-							facebookID = user.getId();
-							
-							AsyncPostRequest login = new AsyncPostRequest();
-							login.setURL("http://54.84.22.77/epi/1/login");
-							login.execute(new BasicNameValuePair[] {
-							new BasicNameValuePair("FacebookID", user.getId()),
-					        new BasicNameValuePair("AccessToken", session.getAccessToken())});
-
-						}
-					}).executeAsync();	
 	    }
 	    uiHelper.onResume();
 	}
@@ -121,5 +103,24 @@ public class MainFragment extends Fragment{
 	    authButton.setFragment(this);
 	    authButton.setReadPermissions(Arrays.asList("user_likes", "user_status"));
 	    return view;
-	}	
+	}
+	
+	private boolean isSessionChanged(Session session) {
+
+	    // Check if session state changed
+	    if (mSession.getState() != session.getState())
+	        return true;
+
+	    // Check if accessToken changed
+	    if (mSession.getAccessToken() != null) {
+	        if (!mSession.getAccessToken().equals(session.getAccessToken()))
+	            return true;
+	    }
+	    else if (session.getAccessToken() != null) {
+	        return true;
+	    }
+
+	    // Nothing changed
+	    return false;
+	}
 }

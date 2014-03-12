@@ -25,6 +25,7 @@ import com.facebook.Session;
 import com.facebook.model.GraphUser;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -43,8 +44,6 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	SimpleAdapter simpleAdpt;
 	PullToRefreshListView lv;
 	
-	String eventsJSON = "{{\"OwnerID\":\"674481742\",\"EventName\":\"Fund Raiser 5k\",\"Loc\":{\"Latitude\":\"33.7896627\",\"Longitude\":\"-84.3946271\"},\"EventDesc\":\"A fund raiser 5k, Share your playlists if you will attend\",\"EventVenue\":\"Griffin Track\"},{\"OwnerID\":\"674481742\",\"EventName\":\"Mobile Apps Lab Party\",\"Loc\":{\"Latitude\":\"33.7773242\",\"Longitude\":\"-84.3899984\"},\"EventDesc\":\"Party at Mobile Apps Lab\",\"EventVenue\":\"Mobile Apps Lab\"}}";
-	JSONArray events; 
 	List<Map<String, String>> EventsList = new ArrayList<Map<String,String>>();
 	
 	@Override
@@ -52,43 +51,36 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_created_events);
 
-		Session session = Session.getActiveSession();
-		Request.newMeRequest(session, 
-        		new Request.GraphUserCallback() {
-					
-					@Override
-					public void onCompleted(GraphUser user, Response response) {
-						// TODO Auto-generated method stub
-						Log.i(TAG, user.getId());
-						String facebookID = user.getId();
-
-						new AsyncFetchEvents().execute(facebookID);
-					}
-				}).executeAsync();
-		
-	     
-	    // We get the ListView component from the layout
+        // We get the ListView component from the layout
 		lv = (PullToRefreshListView) findViewById(R.id.listView);
+		
+		lv.setRefreshing();
+		lv.setEnabled(false);
+
+		SharedPreferences settings = getSharedPreferences(MainActivity.LOGIN_PREFS_NAME, 0);
+	    String facebookID = settings.getString("FacebookID", "");
+	    if (facebookID == "") {
+	    		// redirect to main
+	    		Log.e("BLAHBLAH", "NO FACEBOOKID");
+	    }
+	    new AsyncFetchEvents().execute(facebookID);
+
+		
 		lv.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
 			
 			@Override
 			public void onRefresh() {
-            	Session session = Session.getActiveSession();
-            	Request.newMeRequest(session, 
-                		new Request.GraphUserCallback() {
-        					
-        					@Override
-        					public void onCompleted(GraphUser user, Response response) {
-        						// TODO Auto-generated method stub
-        						Log.i(TAG, user.getId());
-        						String facebookID = user.getId();
-
-        						new AsyncFetchEvents().execute(facebookID);
-        					}
-        				}).executeAsync();
+            	SharedPreferences settings = getSharedPreferences(MainActivity.LOGIN_PREFS_NAME, 0);
+        	    String facebookID = settings.getString("FacebookID", "");
+        	    if (facebookID == "") {
+        	    		// redirect to main
+        	    		Log.e("BLAHBLAH", "NO FACEBOOKID");
+        	    }
+        	    new AsyncFetchEvents().execute(facebookID);
 				
 			}
 		});
+		
 
 
 	    // This is a simple adapter that accepts as parameter
@@ -100,7 +92,6 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	    simpleAdpt = new SimpleAdapter(this, EventsList, R.layout.list_location_view, new String[] {"title", "location"}, new int[] {R.id.title, R.id.location});    
 	 
 	    lv.setAdapter(simpleAdpt);
-
 	}
 
 	@Override
@@ -121,9 +112,8 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	            // openSettings();
 	            return true;
 	        case R.id.logout:
-	        	Session session = Session.getActiveSession();
-	        	session.closeAndClearTokenInformation();
 	        	Intent intent = new Intent(this, MainActivity.class);
+	        	intent.putExtra(MainActivity.LOGIN_MESSAGE, MainActivity.LOGOUT);
 		    	startActivity(intent);
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -135,11 +125,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
-	
-	private void initList() {
-	    // We populate the events
-	    EventsList.add(createEvent("event", "Connecting to Server..."));  
-	}
+
 	 
 	private HashMap<String, String> createEvent(String key, String name) {
 	    HashMap<String, String> event = new HashMap<String, String>();
@@ -185,9 +171,9 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		    }catch(JSONException jse){
 		    	//oops
 		    }
-			Log.i(TAG, EventsList.toString()+""+EventsList.size());
 			simpleAdpt.notifyDataSetChanged();
 			lv.onRefreshComplete();
+			lv.setEnabled(true);
 		}
 
 	}
