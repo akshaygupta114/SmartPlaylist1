@@ -13,14 +13,6 @@
         android:paddingBottom="0dp"
         android:textColor="#3B3B3B"
         android:textSize="20sp" />
-    
-    <TextView
-        android:id="@+id/eventId"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingBottom="0dp"
-        android:textColor="#3B3B3B"
-        android:textSize="12sp" />
         
     <ImageView
         android:id="@+id/icon"
@@ -28,10 +20,10 @@
         android:layout_height="30dp"
         android:layout_below="@id/title"
         android:layout_alignParentLeft="true"
-        android:contentDescription="@string/desc_location_image"
+        android:contentDescription="@string/desc_artist_image"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
-        android:src="@drawable/location" />
+        android:src="@drawable/artist" />
 
 
     <TextView

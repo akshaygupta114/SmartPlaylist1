@@ -9,6 +9,11 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Required OpenGL ES 2.0. for Maps V2 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -46,10 +51,14 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDpSLNmuRoD8yo6dUByeUK2sSx8tB7JbgU" />
+            android:value="AIzaSyD-j4bjyq_thGfzGLtWkXlquSWb_bT7Biw" />
         
         <activity android:name="TabbedActivity"
             android:label="@string/title_tabbed_activity" 
+            android:theme="@style/AppTheme" ></activity>
+        
+        <activity android:name="ViewRecommendedPlaylistActivity"
+            android:label="@string/title_view_songs" 
             android:theme="@style/AppTheme" ></activity>
     </application>
 
