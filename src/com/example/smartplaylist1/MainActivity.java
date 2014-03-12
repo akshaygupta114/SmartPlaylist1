@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity {
 						editor.commit();
 						
 						Context ctxt = getApplicationContext();
-				        Intent intent = new Intent(ctxt, ViewCreatedEventsActivity.class);
+				        Intent intent = new Intent(ctxt, TabbedActivity.class);
 				    	startActivity(intent);
 
 					}

@@ -9,5 +9,8 @@
     <string name="logout">Logout</string>
     <string name="desc_location_image">UI Location Image</string>
     <string name="action_new">New Event</string>
+    <string name="title_tabbed_activity">Tabbed Activity</string>
+    <string name="tab_name_events_nearby">Events Nearby</string>
+    <string name="tab_name_create_your_event">Your Event</string>
 
 </resources>
