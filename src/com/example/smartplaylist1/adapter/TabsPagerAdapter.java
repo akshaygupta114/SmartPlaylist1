@@ -3,8 +3,8 @@ package com.example.smartplaylist1.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import com.example.smartplaylist1.ViewEventsFragment;
-import com.example.smartplaylist1.CreateEventsFragment;
+import com.example.smartplaylist1.ViewCreatedEventsFragment;
+import com.example.smartplaylist1.ViewNearbyEventsFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 	
@@ -16,8 +16,8 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	public Fragment getItem(int index) {
 		
 		switch(index) {
-		case 0: return new CreateEventsFragment();
-		case 1: return new ViewEventsFragment();
+		case 0: return new ViewNearbyEventsFragment();
+		case 1: return new ViewCreatedEventsFragment();
 		}
 		
 		return null;

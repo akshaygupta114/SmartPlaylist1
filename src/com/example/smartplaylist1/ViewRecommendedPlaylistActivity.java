@@ -62,7 +62,7 @@ public class ViewRecommendedPlaylistActivity extends FragmentActivity {
 	 		lv.setRefreshing();
 	 		lv.setEnabled(false);
 	 		
-			SharedPreferences settings = getSharedPreferences(MainActivity.LOGIN_PREFS_NAME, 0);
+			SharedPreferences settings = getSharedPreferences(LoginSplashActivity.LOGIN_PREFS_NAME, 0);
 		    String facebookID = settings.getString("FacebookID", "");
 		    if (facebookID == "") {
 		    		// redirect to main
@@ -74,7 +74,7 @@ public class ViewRecommendedPlaylistActivity extends FragmentActivity {
 				
 				@Override
 				public void onRefresh() {
-	            	SharedPreferences settings = getSharedPreferences(MainActivity.LOGIN_PREFS_NAME, 0);
+	            	SharedPreferences settings = getSharedPreferences(LoginSplashActivity.LOGIN_PREFS_NAME, 0);
 	        	    String facebookID = settings.getString("FacebookID", "");
 	        	    if (facebookID == "") {
 	        	    		// redirect to main
@@ -117,8 +117,9 @@ public class ViewRecommendedPlaylistActivity extends FragmentActivity {
 	            // openSettings();
 	            return true;
 	        case R.id.logout:
-	        	Intent intent = new Intent(this, MainActivity.class);
-	        	intent.putExtra(MainActivity.LOGIN_MESSAGE, MainActivity.LOGOUT);
+	        	Intent intent = new Intent(this, LoginSplashActivity.class);
+	        	intent.putExtra(LoginSplashActivity.LOGIN_MESSAGE, LoginSplashActivity.LOGOUT);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    	startActivity(intent);
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -127,7 +128,7 @@ public class ViewRecommendedPlaylistActivity extends FragmentActivity {
 
 	//Called when Back to Login button is clicked
 	public void backToLogin(View view) {
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, LoginSplashActivity.class);
 		startActivity(intent);
 	}
 

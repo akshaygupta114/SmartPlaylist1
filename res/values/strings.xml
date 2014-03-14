@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">SmartPlaylist1</string>
-    <string name="action_settings">Settings</string>
-    <string name="app_id">646533915411234</string>
+    
+    <string name="app_name">Smart Playlist</string>
+    
+    <!-- Page Titles -->
+    <string name="title_tabbed_activity">Smart Playlist</string>
+    <string name="title_create_new_event">Create New Event</string>
     <string name="title_activity_view_created_events">Your Events</string>
     <string name="title_view_songs">Song List for Event</string>
-    <string name="back">Create New Event</string>
-    <string name="logout">Logout</string>
+    
+    <!--  Description for images -->
     <string name="desc_location_image">UI Location Image</string>
     <string name="desc_artist_image">UI Artist Image</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="app_id">646533915411234</string>
+    
+
+    <string name="back">Create New Event</string>
+    <string name="logout">Logout</string>
+
     <string name="action_new">New Event</string>
-    <string name="title_tabbed_activity">Tabbed Activity</string>
+
     <string name="tab_name_events_nearby">Events Nearby</string>
     <string name="tab_name_create_your_event">Your Event</string>
     <string name="txt_event_name">Name</string>
