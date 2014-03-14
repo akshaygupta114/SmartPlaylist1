@@ -107,16 +107,19 @@ public class TabbedActivity extends FragmentActivity implements
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
+		Intent intent;
 	    switch (item.getItemId()) {
 	        case R.id.action_new:
 	            // Open new activity for this
+	        	intent = new Intent(this, CreateNewEvent.class);
+		    	startActivity(intent);
 	            return true;
 	        case R.id.action_settings:
 	        	// We do nothing here since we have no settings
 	            // openSettings();
 	            return true;
 	        case R.id.logout:
-	        	Intent intent = new Intent(this, MainActivity.class);
+	        	intent = new Intent(this, MainActivity.class);
 	        	intent.putExtra(MainActivity.LOGIN_MESSAGE, MainActivity.LOGOUT);
 		    	startActivity(intent);
 	        default:
