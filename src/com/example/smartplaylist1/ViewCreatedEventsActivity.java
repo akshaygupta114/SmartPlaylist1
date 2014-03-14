@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -69,7 +70,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 	    simpleAdpt = new SimpleAdapter(this, EventsList, android.R.layout.simple_list_item_1, new String[] {"event"}, new int[] {android.R.id.text1});    
 	 
 	    lv.setAdapter(simpleAdpt);
-
+	    
 	}
 
 	@Override
@@ -85,11 +86,7 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 		startActivity(intent);
 	}
 	
-	public void createNewEvent(View view) {
-		Intent intent = new Intent(this, CreateNewEventActivity.class);
-		startActivity(intent);
-	}
-	
+		
 	private void initList() {
 	    // We populate the events
 	    EventsList.add(createEvent("event", "Connecting to Server..."));  
@@ -141,5 +138,11 @@ public class ViewCreatedEventsActivity extends FragmentActivity {
 			simpleAdpt.notifyDataSetChanged();
 		}
 
+	}
+	
+	public void createNewEvent(View view) {
+		Log.i(TAG, "starting create new event activity ");
+		Intent intent = new Intent(this, CreateNewEventActivity.class);
+		startActivity(intent);
 	}
 }
