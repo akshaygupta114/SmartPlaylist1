@@ -41,12 +41,22 @@
         android:layout_marginTop="25dp"
         android:ems="10"
         android:hint="@string/txt_event_venue" />
+    
+    <AutoCompleteTextView 
+   	    android:id="@+id/autocomplete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edit_Name"
+        android:layout_below="@+id/edit_Venue"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/txt_event_address"  />
 
     <LinearLayout
         android:id="@+id/edit_Location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_Venue"
+        android:layout_below="@+id/autocomplete"
         android:layout_alignBottom="@+id/button1"
         android:layout_alignLeft="@+id/edit_Venue"
         android:orientation="horizontal"
@@ -68,6 +78,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/txt_event_latitude" />
+        
 
     </LinearLayout>
 
