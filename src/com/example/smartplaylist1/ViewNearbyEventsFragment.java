@@ -145,8 +145,8 @@ public class ViewNearbyEventsFragment extends Fragment {
             lat = location.getLatitude();
             log = location.getLongitude();
         } catch (NullPointerException e) {
-            lat = -1.0;
-            log = -1.0;
+            lat = 33.780969;
+            log = -84.400387;
         }
     }
     

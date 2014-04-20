@@ -28,8 +28,6 @@
     <string name="btn_create">Create</string>
     <string name="txt_event_description">Description</string>
     <string name="txt_event_venue">Venue</string>
-    <string name="txt_event_latitude">Latitude</string>
-    <string name="txt_event_longitude">Longitude</string>
     <string name="btn_create_event">Create Event</string>
     <string name="txt_event_address">Address</string>
 
