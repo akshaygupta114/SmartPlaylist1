@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
@@ -35,6 +36,7 @@ public class ViewNearbyEventsFragment extends Fragment {
     double lat;
     double log;
     String eventId;
+    Context context;
     private static final String getEventsURL= "http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/event";
     private static final String TAG = "ViewNearbyEventsFragment";
 	
@@ -159,9 +161,10 @@ public class ViewNearbyEventsFragment extends Fragment {
 		        for (int i=0; i < jArray.length(); i++)
 		        {
 	                JSONObject oneObject = jArray.getJSONObject(i);
-	                Log.e("Akshay!!!"+i, oneObject.toString());
+	                Log.e("Akshay!!! Marker set for"+i, oneObject.toString());
 	                JSONObject Loc = oneObject.getJSONObject("Loc");
 	                eventId = oneObject.getString("_id");
+	                Log.e(TAG, "Akshay! EventID read "+eventId);
 	                Double latitude = Loc.getDouble("Latitude");
 	                Double longitude = Loc.getDouble("Longitude");
 	                String eventName = oneObject.getString("EventName");
@@ -217,9 +220,11 @@ public class ViewNearbyEventsFragment extends Fragment {
                         	    }
                             	StringBuilder sb = new StringBuilder("http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/sharePlaylistWith?eventID=");
                                 sb.append(eventId);
-                                sb.append("?FacebookID="+facebookID);
+                                sb.append("&FacebookID="+facebookID);
                                 Log.i("Akshay! URL Sent on Share Playlist", sb.toString());
                                 new AsyncSharePlaylist().execute(sb.toString());
+                                context = getActivity();
+                                Toast.makeText(context, "Playlist shared", Toast.LENGTH_SHORT).show();
                                 
                             }
                             catch(Exception e) {
@@ -241,14 +246,14 @@ public class ViewNearbyEventsFragment extends Fragment {
                     });
 
                 // Move the camera to last position with a zoom level
-                if (i == 9) {
+                
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(new LatLng(lat,
                                     log)).zoom(15).build();
 
                     googleMap.animateCamera(CameraUpdateFactory
                             .newCameraPosition(cameraPosition));
-                }
+                
 	                
 		        }
 	                
