@@ -1,11 +1,15 @@
 package com.example.smartplaylist1;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,13 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
- 
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ViewNearbyEventsFragment extends Fragment {
@@ -28,6 +34,10 @@ public class ViewNearbyEventsFragment extends Fragment {
     private GoogleMap googleMap;
     double lat;
     double log;
+    String eventId;
+    private static final String getEventsURL= "http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/event";
+    private static final String TAG = "ViewNearbyEventsFragment";
+	
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,68 +75,16 @@ public class ViewNearbyEventsFragment extends Fragment {
             // Enable / Disable zooming functionality
             googleMap.getUiSettings().setZoomGesturesEnabled(true);
             
-            _getLocation();
-            double latitude = lat; //17.385044;
-            double longitude = log; //78.486671;
-
-            // lets place some 10 random markers
-            for (int i = 0; i < 10; i++) {
-                // random latitude and logitude
-                double[] randomLocation = createRandLocation(latitude,
-                        longitude);
-
-                // Adding a marker
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(randomLocation[0], randomLocation[1]))
-                        .title("Hello Maps " + i);
-
-                Log.e("Random", "> " + randomLocation[0] + ", "
-                        + randomLocation[1]);
-
-                // changing marker color
-                if (i == 0)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                if (i == 1)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                if (i == 2)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                if (i == 3)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                if (i == 4)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                if (i == 5)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                if (i == 6)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                if (i == 7)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-                if (i == 8)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                if (i == 9)
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-
-                googleMap.addMarker(marker);
-
-                // Move the camera to last position with a zoom level
-                if (i == 9) {
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(new LatLng(randomLocation[0],
-                                    randomLocation[1])).zoom(15).build();
-
-                    googleMap.animateCamera(CameraUpdateFactory
-                            .newCameraPosition(cameraPosition));
-                }
+            Location location = _getLocation();
+            
+            try {
+                lat = location.getLatitude();
+                log = location.getLongitude();
+            } catch (NullPointerException e) {
+                lat = 33.780969;
+                log = -84.400387;
             }
+            getNearbyEvents(lat, log);
  
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,20 +92,14 @@ public class ViewNearbyEventsFragment extends Fragment {
         return rootView;
     }
     
-    private void _getLocation() {
+    private Location _getLocation() {
         // Get the location manager
         LocationManager locationManager = (LocationManager) 
                 getActivity().getSystemService(getActivity().LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String bestProvider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(bestProvider);
-        try {
-            lat = location.getLatitude();
-            log = location.getLongitude();
-        } catch (NullPointerException e) {
-            lat = 33.780969;
-            log = -84.400387;
-        }
+        return location;
     }
     
     /**
@@ -173,13 +125,137 @@ public class ViewNearbyEventsFragment extends Fragment {
         initilizeMap();
     }
 
-    /*
-     * creating random postion around a location for testing purpose only
-     */
-    private double[] createRandLocation(double latitude, double longitude) {
-
-        return new double[] { latitude + ((Math.random() - 0.5) / 500),
-                longitude + ((Math.random() - 0.5) / 500),
-                150 + ((Math.random() - 0.5) * 10) };
+    public void getNearbyEvents(double latitude, double longitude)
+    {
+    	try {
+        	StringBuilder sb = new StringBuilder("http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/eventsnear?Longitude=");
+            sb.append(longitude);
+            sb.append("&Latitude="+latitude);
+            
+            new AsyncFetchEvents().execute(sb.toString());
+            Log.i("Akshay! sb", sb.toString());
+        }
+        catch(Exception e) {
+        	Log.i(TAG, e.toString());
+        }
     }
+    
+    private class AsyncFetchEvents extends AsyncTask<String, Integer, String> {
+		@Override
+		protected String doInBackground(String... arg0) {
+			// TODO Auto-generated method stub
+			GetRequest req = new GetRequest();
+			Log.e(TAG+"Akshay!! URL", arg0[0].toString());
+			req.setURL(arg0[0]);
+			String str = req.getData();
+			Log.i(TAG, "BACKGROUND:" + str);
+			return str;
+		}
+		
+		protected void onPostExecute(String str) {
+			try {
+		        JSONTokener tokener = new JSONTokener(str);
+		        JSONArray jArray = new JSONArray(tokener);
+		        for (int i=0; i < jArray.length(); i++)
+		        {
+	                JSONObject oneObject = jArray.getJSONObject(i);
+	                Log.e("Akshay!!!"+i, oneObject.toString());
+	                JSONObject Loc = oneObject.getJSONObject("Loc");
+	                eventId = oneObject.getString("_id");
+	                Double latitude = Loc.getDouble("Latitude");
+	                Double longitude = Loc.getDouble("Longitude");
+	                String eventName = oneObject.getString("EventName");
+	                MarkerOptions marker = new MarkerOptions().position(
+                            new LatLng(latitude, longitude))
+                            .title("Share Playlist with "+eventName);
+	                
+	                
+	              //Changing Marker Color
+                    if (i == 0)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    if (i == 1)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    if (i == 2)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    if (i == 3)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    if (i == 4)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    if (i == 5)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                    if (i == 6)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    if (i == 7)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                    if (i == 8)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                    if (i == 9)
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
+                    googleMap.addMarker(marker);
+                    googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            Log.e("Akshay!!! Map infoWindow clicked", marker.getTitle());
+                            try {
+                            	SharedPreferences settings = getActivity().getSharedPreferences(LoginSplashActivity.LOGIN_PREFS_NAME, 0);
+                        	    String facebookID = settings.getString("FacebookID", "");
+                        	    if (facebookID == "") {
+                        	    		// redirect to main
+                        	    		Log.e("BLAHBLAH", "NO FACEBOOKID");
+                        	    }
+                            	StringBuilder sb = new StringBuilder("http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/sharePlaylistWith?eventID=");
+                                sb.append(eventId);
+                                sb.append("?FacebookID="+facebookID);
+                                Log.i("Akshay! URL Sent on Share Playlist", sb.toString());
+                                new AsyncSharePlaylist().execute(sb.toString());
+                                
+                            }
+                            catch(Exception e) {
+                            	Log.i(TAG, e.toString());
+                            }
+                        }
+                        
+                        class AsyncSharePlaylist extends AsyncTask<String, Integer, String> {
+                    		@Override
+                    		protected String doInBackground(String... arg0) {
+                    			// TODO Auto-generated method stub
+                    			GetRequest req = new GetRequest();
+                    			Log.e(TAG+"Akshay!! URL", arg0[0].toString());
+                    			req.setURL(arg0[0]);
+                    			req.getData();
+                    			return "";
+                    		}
+                        }
+                    });
+
+                // Move the camera to last position with a zoom level
+                if (i == 9) {
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(lat,
+                                    log)).zoom(15).build();
+
+                    googleMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(cameraPosition));
+                }
+	                
+		        }
+	                
+		    }catch(JSONException jse){
+		    	Log.e(TAG, jse.toString());
+		    }
+		}
+
+	}
 }
