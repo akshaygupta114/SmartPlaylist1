@@ -33,8 +33,8 @@ public class ViewNearbyEventsFragment extends Fragment {
 	
 	 // Google Map
     private GoogleMap googleMap;
-    double lat;
-    double log;
+    double lat = 33.780969;
+    double log = -84.400387;
     String eventId;
     Context context;
     private static final String getEventsURL= "http://ec2-54-84-22-77.compute-1.amazonaws.com/epi/1/event";
@@ -118,6 +118,16 @@ public class ViewNearbyEventsFragment extends Fragment {
                         "Sorry! unable to create maps", Toast.LENGTH_SHORT)
                         .show();
             }
+            
+            // Move the camera to last position with a zoom level
+            
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(lat,
+                            log)).zoom(15).build();
+
+            googleMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(cameraPosition));
+        
         }
     }
  
@@ -171,6 +181,9 @@ public class ViewNearbyEventsFragment extends Fragment {
 	                MarkerOptions marker = new MarkerOptions().position(
                             new LatLng(latitude, longitude))
                             .title("Share Playlist with "+eventName);
+	                
+
+	                
 	                
 	                
 	              //Changing Marker Color
@@ -245,16 +258,7 @@ public class ViewNearbyEventsFragment extends Fragment {
                         }
                     });
 
-                // Move the camera to last position with a zoom level
-                
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(new LatLng(lat,
-                                    log)).zoom(15).build();
 
-                    googleMap.animateCamera(CameraUpdateFactory
-                            .newCameraPosition(cameraPosition));
-                
-	                
 		        }
 	                
 		    }catch(JSONException jse){
